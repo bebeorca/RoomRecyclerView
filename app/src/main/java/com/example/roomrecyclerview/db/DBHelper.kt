@@ -14,6 +14,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
     companion object{
         val DATABASE_NAME = "kantin.db"
         val DATABASE_VERSION = 1
+        val ID = "id"
         val NAMA_TABLE = "tbl_kantin"
         val NAMA_KANTIN = "nama_kantin"
         val NAMA_PEMILIK = "nama_pemilik"
@@ -22,7 +23,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
 
     override fun onCreate(db: SQLiteDatabase?) {
         val cTable = ("CREATE TABLE "+ NAMA_TABLE + "(" +
-                BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
+                ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
                 NAMA_KANTIN+" TEXT," +
                 NAMA_PEMILIK+" TEXT," +
                 TELEPON+" TEXT"+")")
@@ -38,6 +39,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
     fun insertData(kntin: KantinModel): Long{
         val db = this.writableDatabase
         val contentValues = ContentValues()
+        contentValues.put(ID, kntin.id)
         contentValues.put(NAMA_KANTIN, kntin.nama_kantin)
         contentValues.put(NAMA_PEMILIK, kntin.nama_pemilik)
         contentValues.put(TELEPON, kntin.telepon)
@@ -66,17 +68,19 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
             return ArrayList()
         }
 
+        var id: Int
         var nk: String
         var np: String
-        var tp: Int
+        var tp: String
 
         if(cursor.moveToFirst()){
             do {
+                id = cursor.getInt(cursor.getColumnIndex("id"))
                 nk = cursor.getString(cursor.getColumnIndex("nama_kantin"))
                 np = cursor.getString(cursor.getColumnIndex("nama_pemilik"))
-                tp = cursor.getInt(cursor.getColumnIndex("telepon"))
+                tp = cursor.getString(cursor.getColumnIndex("telepon"))
 
-                val lst = KantinModel(nama_kantin = nk, nama_pemilik = np, telepon = tp.toString())
+                val lst = KantinModel(id = id, nama_kantin = nk, nama_pemilik = np, telepon = tp)
                 list.add(lst)
             }while (cursor.moveToNext())
         }
@@ -84,11 +88,5 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         return list
 
     }
-
-    fun readId(): Cursor {
-        val db: SQLiteDatabase = this.writableDatabase
-        return db.rawQuery("SELECT * FROM $NAMA_TABLE", null)
-    }
-
 
 }

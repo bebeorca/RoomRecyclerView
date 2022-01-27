@@ -15,6 +15,7 @@ class KantinAdapter: RecyclerView.Adapter<KantinAdapter.ViewHolder>() {
 
     fun addItems(items: ArrayList<KantinModel>){
         this.kantinList = items
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
@@ -37,9 +38,10 @@ class KantinAdapter: RecyclerView.Adapter<KantinAdapter.ViewHolder>() {
         val tp = view.tv_tp
 
         fun bindView(model: KantinModel){
-            nk.text = model.nama_kantin
-            np.text = model.nama_pemilik
-            tp.text = model.telepon
+            id.text = "ID: ${model.id}"
+            nk.text = "NANA KANTIN: ${model.nama_kantin}"
+            np.text = "NAMA PEMILIK: ${model.nama_pemilik}"
+            tp.text = "TELEPON: ${model.telepon}"
         }
 
     }
